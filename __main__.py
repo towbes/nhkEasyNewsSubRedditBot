@@ -11,6 +11,7 @@ nhk_api_url = 'https://www3.nhk.or.jp/news/easy/news-list.json'
 
 #Number of days to look back
 lookbackDays = 10
+subreddit_name = 'nhkEasyNewsTesting'
 
 def fetch_latest_articles():
     response = requests.get(nhk_api_url)
@@ -102,8 +103,6 @@ def main():
 
     for key, value in last7nhk.items():
         print(f"{key}, {value} articles")
-
-    subreddit_name = 'nhkEasyNewsTesting'
 
     # Get the subreddit instance
     subreddit = reddit.subreddit(subreddit_name)
