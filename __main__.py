@@ -56,7 +56,7 @@ def get_raw_html(url):
 def get_text(url):
 
     article_body_xpath = "//div[@id='js-article-body']"
-    join_text = lambda html: "\n".join(
+    join_text = lambda html: "".join(
         html.xpath(f"{article_body_xpath}//text()")
     ).strip()
 
