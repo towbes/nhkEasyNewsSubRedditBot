@@ -11,7 +11,7 @@ nhk_api_url = 'https://www3.nhk.or.jp/news/easy/news-list.json'
 
 #Number of days to look back
 lookbackDays = 10
-subreddit_name = 'nhkEasyNewsTesting'
+subreddit_name = 'NHKEasyNews'
 
 def fetch_latest_articles():
     response = requests.get(nhk_api_url)
@@ -63,7 +63,15 @@ def get_text(url):
     raw_html = get_raw_html(url)
     html = le.HTML(raw_html)
     le.strip_elements(html, "rt")
-    return join_text(html)
+    
+    #Format for reddit post. Some articles end up with double \n\n to replace, others not
+    text_return = join_text(html)
+    if '\n\n' in text_return:
+        modified_string = text_return.replace('\n\n', '\n\n&nbsp;\n\n')
+    else:
+        modified_string = text_return.replace('\n', '\n\n&nbsp;\n\n')
+    #print(modified_string)
+    return modified_string
 
 """
 End for code from https://github.com/TianyiShi2001/nhk-easy
@@ -108,7 +116,7 @@ def main():
     subreddit = reddit.subreddit(subreddit_name)
 
     # Get the last 30 posts from the subreddit
-    posts = subreddit.new(limit=30)
+    posts = subreddit.new(limit=50)
 
     #list to store post titles
     post_titles = []
@@ -187,12 +195,12 @@ def main():
             
             # Format the Reddit post
             post_title = f"[{date}] {title}"
-            post_text = f"[{link}]({link})\n\n{content}"
+            post_text = f"[{link}]({link})\n\n&nbsp;\n\n{content}"
             
             # Submit the post
             subreddit.submit(post_title, selftext=post_text)
             print(f"Posted: {post_title}", flush=True)
-            #print(f"{content}", flush=True)
+            #print(f"{post_text}", flush=True)
             time.sleep(3)
     
     #For the partial dates, need to compare the titles
@@ -209,7 +217,7 @@ def main():
                 
                 # Format the Reddit post
                 post_title = f"[{date}] {nhkTitle}"
-                post_text = f"[{link}]({link})\n\n{content}"
+                post_text = f"[{link}]({link})\n\n&nbsp;\n\n{content}"
                 
                 # Submit the post
                 subreddit.submit(post_title, selftext=post_text)
